@@ -61,3 +61,30 @@ The objective of this dashboard is to help business stakeholders monitor sales p
 ## Project Files
 
 - AdventureWorks Report_FINAL.pbix
+
+---
+
+# Dashboard Preview
+
+## Executive Dashboard
+
+![Executive Dashboard](Images/Executive_Dashboard.png)
+
+## Map Analysis
+
+![Map Analysis](Images/Map_Analysis.png)
+
+## Product Analysis
+
+![Product Analysis](Images/Product_Analysis.png)
+
+## Customer Analysis
+
+![Customer Analysis](Images/Customer_Analysis.png)
+
+
+
+
+
+
+
