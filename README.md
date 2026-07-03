@@ -1,6 +1,6 @@
 # 👋 Hi, I'm Niraja Magar
 
-## Power BI Developer | Data Analyst | Business Intelligence Engineer
+## Data Analyst | Power BI Developer | SQL | Python | Business Intelligence
 
 Welcome to my Power BI Portfolio!
 
