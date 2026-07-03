@@ -52,3 +52,24 @@ To enable insurance companies to monitor KPIs, reduce fraudulent claims, improve
 - Publish reports to Power BI Service
 - Implement Row-Level Security (RLS)
 - Add automated data refresh
+
+---
+
+# Dashboard Preview
+
+## Executive Dashboard
+
+![Executive Dashboard](Images/Executive_Dashboard.png)
+
+## Map Analysis
+
+![Map Analysis](Images/Map_Analysis.png)
+
+## Product Analysis
+
+![Product Analysis](Images/Product_Analysis.png)
+
+## Customer Analysis
+
+![Customer Analysis](Images/Customer_Analysis.png)
+
