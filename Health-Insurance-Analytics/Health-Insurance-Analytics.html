@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthSecure Analytics — Power BI Dashboard Mockup</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --primary: #2E5BBA;
+    --primary-dark: #1d3f8a;
+    --primary-light: #eef3fc;
+    --success: #28A745;
+    --warning: #FFC107;
+    --danger: #DC3545;
+    --bg: #f4f6f8;
+    --sidebar-bg: #1a2533;
+    --sidebar-hover: #243447;
+    --card: #ffffff;
+    --text: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #95a5a6;
+    --border: #e1e7ef;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    font-size: 13px;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ============ SIDEBAR ============ */
+.sidebar {
+    width: 240px;
+    background: var(--sidebar-bg);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.brand {
+    padding: 20px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 2px;
+}
+.brand-tag {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+}
+
+.nav-section-title {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    padding: 16px 18px 6px;
+    letter-spacing: 1px;
+}
+
+.nav-item {
+    padding: 9px 18px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.75);
+    border-left: 3px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    transition: all 0.15s;
+}
+.nav-item:hover { background: var(--sidebar-hover); color: white; }
+.nav-item.active {
+    background: var(--sidebar-hover);
+    color: white;
+    border-left-color: #4a8eff;
+}
+.nav-icon { font-size: 14px; width: 18px; text-align: center; }
+
+/* ============ MAIN ============ */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.topbar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+}
+.page-title-area h1 {
+    font-size: 17px;
+    font-weight: 650;
+    color: var(--primary-dark);
+}
+.page-title-area .breadcrumb {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.topbar-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.btn {
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text);
+    transition: all 0.15s;
+}
+.btn:hover { background: var(--primary-light); border-color: var(--primary); }
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+.btn-primary:hover { background: var(--primary-dark); }
+
+/* ============ FILTER BAR ============ */
+.filter-bar {
+    background: white;
+    padding: 10px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+.filter-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.filter-pill {
+    padding: 5px 12px;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.filter-pill:hover { border-color: var(--primary); }
+.filter-pill.active {
+    background: var(--primary);
+    color: white;
+}
+.filter-select {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-size: 12px;
+    background: white;
+    cursor: pointer;
+}
+
+/* ============ CONTENT ============ */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 24px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ============ KPI CARDS ============ */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.kpi-row.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.kpi-row.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+.kpi-card {
+    background: white;
+    padding: 14px 16px;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary);
+}
+.kpi-card.success::before { background: var(--success); }
+.kpi-card.warning::before { background: var(--warning); }
+.kpi-card.danger::before { background: var(--danger); }
+
+.kpi-label {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+.kpi-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+}
+.kpi-delta {
+    font-size: 11px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.kpi-delta.up { color: var(--success); }
+.kpi-delta.down { color: var(--danger); }
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+}
+.status-good { background: #d4edda; color: #155724; }
+.status-warn { background: #fff3cd; color: #856404; }
+.status-bad { background: #f8d7da; color: #721c24; }
+
+/* ============ VISUAL CARDS ============ */
+.viz-grid {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+.viz-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.viz-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.viz-grid.cols-2-1 { grid-template-columns: 2fr 1fr; }
+.viz-grid.cols-1-2 { grid-template-columns: 1fr 2fr; }
+
+.viz-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+    position: relative;
+}
+.viz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.viz-title {
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--text);
+}
+.viz-subtitle {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+.viz-menu {
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+}
+.chart-container {
+    position: relative;
+    height: 230px;
+}
+.chart-container.tall { height: 300px; }
+.chart-container.short { height: 180px; }
+
+/* ============ DATA TABLE ============ */
+.dt-table {
+    width: 100%;
+    font-size: 11.5px;
+    border-collapse: collapse;
+}
+.dt-table th {
+    text-align: left;
+    padding: 7px 8px;
+    background: #f8fafd;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+}
+.dt-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid #f0f3f7;
+}
+.dt-table tbody tr:hover { background: var(--primary-light); }
+
+.bar-cell {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.bar-fill {
+    height: 6px;
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.rank-medal {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+.rank-medal.gold { background: #ffd700; color: #6b5b00; }
+.rank-medal.silver { background: #c0c0c0; color: #3a3a3a; }
+.rank-medal.bronze { background: #cd7f32; color: white; }
+
+/* gauge */
+.gauge {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.gauge-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+.gauge-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+.gauge-bar {
+    width: 100%;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    margin-top: 12px;
+    overflow: hidden;
+}
+.gauge-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--success), var(--warning), var(--danger));
+    border-radius: 4px;
+}
+
+/* slicer pills inline */
+.slicer-set {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.slicer-set .slicer-chip {
+    padding: 3px 9px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 10.5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+.slicer-set .slicer-chip.selected {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* notes panel */
+.notes-banner {
+    background: #fff8e1;
+    border-left: 4px solid var(--warning);
+    padding: 8px 14px;
+    margin-bottom: 14px;
+    font-size: 11.5px;
+    color: #6b5b00;
+    border-radius: 4px;
+}
+.notes-banner strong { color: #6b5b00; }
+
+/* annotations explaining features */
+.feature-callout {
+    position: absolute;
+    background: #1a2533;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f0f3f7; }
+::-webkit-scrollbar-thumb { background: #c1c9d2; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #95a5a6; }
+
+/* Customer 360 specifics */
+.profile-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 18px 22px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+}
+.profile-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.profile-meta { font-size: 12px; opacity: 0.9; }
+.profile-meta span { margin-right: 16px; }
+.profile-tags { margin-top: 10px; display: flex; gap: 6px; }
+.profile-tag {
+    padding: 3px 10px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 12px;
+    font-size: 10.5px;
+}
+
+/* Decomposition tree dummy */
+.tree-node {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 2px;
+    font-size: 11px;
+    display: inline-block;
+}
+.tree-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+/* Page header inside content */
+.page-header-strip {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--primary);
+}
+.page-header-strip h2 {
+    font-size: 15px;
+    color: var(--primary-dark);
+    margin-bottom: 3px;
+}
+.page-header-strip p {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+    <!-- ====== SIDEBAR ====== -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-name">🏥 HealthSecure</div>
+            <div class="brand-tag">Analytics Platform</div>
+        </div>
+
+        <div class="nav-section-title">Overview</div>
+        <div class="nav-item active" data-page="exec"><span class="nav-icon">📊</span>Executive Summary</div>
+
+        <div class="nav-section-title">Analytics</div>
+        <div class="nav-item" data-page="claims"><span class="nav-icon">📋</span>Claims Analysis</div>
+        <div class="nav-item" data-page="customer"><span class="nav-icon">👥</span>Customer Analysis</div>
+        <div class="nav-item" data-page="policy"><span class="nav-icon">📄</span>Policy & Premium</div>
+        <div class="nav-item" data-page="agent"><span class="nav-icon">🤝</span>Agent & Sales</div>
+        <div class="nav-item" data-page="hospital"><span class="nav-icon">🏥</span>Hospital & Geo</div>
+
+        <div class="nav-section-title">Specialized</div>
+        <div class="nav-item" data-page="fraud"><span class="nav-icon">🚨</span>Fraud Detection</div>
+        <div class="nav-item" data-page="trend"><span class="nav-icon">📈</span>Trend Analysis</div>
+        <div class="nav-item" data-page="ops"><span class="nav-icon">⚙️</span>Operations</div>
+
+        <div class="nav-section-title">Drill-Through</div>
+        <div class="nav-item" data-page="cust360"><span class="nav-icon">🔍</span>Customer 360</div>
+        <div class="nav-item" data-page="hosp360"><span class="nav-icon">🏨</span>Hospital 360</div>
+
+        <div class="nav-section-title">Admin</div>
+        <div class="nav-item" data-page="dq"><span class="nav-icon">🔧</span>Data Quality</div>
+    </aside>
+
+    <!-- ====== MAIN ====== -->
+    <div class="main">
+        <div class="topbar">
+            <div class="page-title-area">
+                <h1 id="topbar-title">Executive Summary</h1>
+                <div class="breadcrumb" id="topbar-crumb">HealthSecure Insurance Ltd. › Overview › <span id="dynamic-title-text">FY 2024-25 | All Regions</span></div>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn">🔄 Refresh</button>
+                <button class="btn">🔖 Bookmarks ▾</button>
+                <button class="btn">📤 Export</button>
+                <button class="btn btn-primary">👤 Admin (RLS: All)</button>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <span class="filter-label">Filters:</span>
+            <select class="filter-select"><option>FY 2024-25</option><option>FY 2023-24</option><option>FY 2022-23</option></select>
+            <select class="filter-select"><option>All Regions</option><option>North</option><option>South</option><option>East</option><option>West</option></select>
+            <select class="filter-select"><option>All Policy Types</option><option>Individual</option><option>Family Floater</option><option>Senior Citizen</option></select>
+            <div class="slicer-set" style="margin-left:8px;">
+                <span class="slicer-chip selected">Approved</span>
+                <span class="slicer-chip selected">Settled</span>
+                <span class="slicer-chip">Rejected</span>
+                <span class="slicer-chip">Pending</span>
+            </div>
+            <button class="btn" style="margin-left:auto;">↻ Reset</button>
+        </div>
+
+        <div class="content" id="content">
+
+            <!-- ============================================
+                 PAGE 1: EXECUTIVE SUMMARY
+                 ============================================ -->
+            <div class="page active" id="page-exec">
+                <div class="notes-banner">
+                    <strong>📍 Page 1 of 12 — Executive Summary</strong> &nbsp;|&nbsp; Designed for C-suite. KPI strip, monthly trend, top hospitals map, business health score. Bookmarks: "Last Year View", "Current View", "Reset". RLS-aware.
+                </div>
+
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Claims</div>
+                        <div class="kpi-value">9,837</div>
+                        <div class="kpi-delta up">▲ 12.4% YoY</div>
+                    </div>
+                    <div class="kpi-card success">
+                        <div class="kpi-label">Total Claim Amount</div>
+                        <div class="kpi-value">₹438.6 Cr</div>
+                        <div class="kpi-delta up">▲ 8.7% YoY</div>
+                    </div>
+                    <div class="kpi-card success">
+                        <div class="kpi-label">Approval Rate</div>
+                        <div class="kpi-value">82.4%</div>
+                        <div class="kpi-delta"><span class="status-badge status-good">🟢 Excellent</span></div>
+                    </div>
+                    <div class="kpi-card warning">
+                        <div class="kpi-label">Loss Ratio</div>
+                        <div class="kpi-value">68.3%</div>
+                        <div class="kpi-delta"><span class="status-badge status-warn">🟡 Acceptable</span></div>
+                    </div>
+                    <div class="kpi-card danger">
+                        <div class="kpi-label">Fraud Rate</div>
+                        <div class="kpi-value">4.2%</div>
+                        <div class="kpi-delta down">▲ 0.8% YoY</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Avg Processing</div>
+                        <div class="kpi-value">14.2 days</div>
+                        <div class="kpi-delta up">▼ 2.3 days</div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-2-1">
+                    <div class="viz-card">
+                        <div class="viz-header">
+                            <div>
+                                <div class="viz-title">Monthly Claim Amount — Current vs Previous Year</div>
+                                <div class="viz-subtitle">Time-intelligence DAX (SAMEPERIODLASTYEAR)</div>
+                            </div>
+                            <span class="viz-menu">⋯</span>
+                        </div>
+                        <div class="chart-container"><canvas id="execTrend"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header">
+                            <div class="viz-title">Business Health Score</div>
+                            <span class="viz-menu">⋯</span>
+                        </div>
+                        <div class="chart-container">
+                            <div class="gauge">
+                                <div class="gauge-value">78</div>
+                                <div class="gauge-label">/ 100 Composite Score</div>
+                                <div class="gauge-bar"><div class="gauge-fill" style="width:78%;"></div></div>
+                                <div style="margin-top:18px; font-size:11px; color:var(--text-secondary); text-align:center;">
+                                    Approval 30% · Loss 30% · Fraud 20% · Speed 20%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-3">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Claim Status Mix</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container short"><canvas id="execStatus"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Cashless vs Reimbursement</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container short"><canvas id="execClaimType"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Top 5 States by Claim Amount</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container short"><canvas id="execStates"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Top 10 Hospitals by Claim Amount</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="execHospitals"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Claims by Region (Geographic)</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="execRegion"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 2: CLAIMS ANALYSIS
+                 ============================================ -->
+            <div class="page" id="page-claims">
+                <div class="notes-banner">
+                    <strong>📍 Page 2 of 12 — Claims Analysis</strong> &nbsp;|&nbsp; Funnel, status × type breakdown, processing distribution, disease heatmap. Drill-through to Customer 360 / Hospital 360. Tooltip pages on processing buckets.
+                </div>
+
+                <div class="kpi-row cols-5">
+                    <div class="kpi-card"><div class="kpi-label">Submitted</div><div class="kpi-value">9,837</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Approved</div><div class="kpi-value">6,124</div><div class="kpi-delta up">62.3%</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Settled</div><div class="kpi-value">1,978</div><div class="kpi-delta up">20.1%</div></div>
+                    <div class="kpi-card danger"><div class="kpi-label">Rejected</div><div class="kpi-value">1,283</div><div class="kpi-delta down">13.0%</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Pending</div><div class="kpi-value">452</div><div class="kpi-delta">4.6%</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Claim Settlement Funnel</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="claimsFunnel"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Claim Amount Distribution (Histogram)</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="claimsHist"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Disease Category × Claim Status (Heatmap-style)</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container tall"><canvas id="claimsHeatmap"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Avg Processing Days by Hospital Type</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container tall"><canvas id="claimsProcessing"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <div class="viz-header"><div class="viz-title">Recent High-Value Claims (Drill-through enabled)</div><span class="viz-menu">⋯</span></div>
+                    <table class="dt-table">
+                        <thead><tr><th>Claim ID</th><th>Customer</th><th>Disease</th><th>Hospital</th><th>Claim Amt</th><th>Approved</th><th>Status</th><th>Fraud?</th></tr></thead>
+                        <tbody>
+                            <tr><td>CLM0008927</td><td>Aarav Sharma</td><td>Cardiac Arrest</td><td>Apollo Mumbai</td><td>₹7,84,058</td><td>₹6,82,388</td><td><span class="status-badge status-good">Approved</span></td><td>No</td></tr>
+                            <tr><td>CLM0008931</td><td>Patricia Johnson</td><td>Cancer Treatment</td><td>Fortis Bangalore</td><td>₹6,98,524</td><td>₹0</td><td><span class="status-badge status-bad">Rejected</span></td><td><span class="status-badge status-bad">Yes</span></td></tr>
+                            <tr><td>CLM0008954</td><td>Diya Sharma</td><td>Heart Surgery</td><td>Medanta Delhi</td><td>₹6,08,979</td><td>₹5,41,234</td><td><span class="status-badge status-good">Settled</span></td><td>No</td></tr>
+                            <tr><td>CLM0008962</td><td>Krishna Singh</td><td>Kidney Failure</td><td>Manipal Pune</td><td>₹5,28,300</td><td>—</td><td><span class="status-badge status-warn">Pending</span></td><td>No</td></tr>
+                            <tr><td>CLM0008981</td><td>Emma Khan</td><td>Stroke</td><td>AIIMS Delhi</td><td>₹4,98,528</td><td>₹3,89,001</td><td><span class="status-badge status-good">Approved</span></td><td>No</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 3: CUSTOMER ANALYSIS
+                 ============================================ -->
+            <div class="page" id="page-customer">
+                <div class="notes-banner">
+                    <strong>📍 Page 3 of 12 — Customer Analysis</strong> &nbsp;|&nbsp; Demographics, claim behavior, income segmentation. Drill to Customer 360. Bookmarks: Senior view / High-Income view.
+                </div>
+
+                <div class="kpi-row">
+                    <div class="kpi-card"><div class="kpi-label">Total Customers</div><div class="kpi-value">498</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Active Claimants</div><div class="kpi-value">412</div><div class="kpi-delta">82.7%</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Claims / Customer</div><div class="kpi-value">23.9</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Repeat Claimants</div><div class="kpi-value">187</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">New Customers (12M)</div><div class="kpi-value">64</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Never Claimed</div><div class="kpi-value">86</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Age Group Distribution</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="custAge"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Gender × Marital Status</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="custGender"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Income Segment vs Avg Claim Amount</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="custIncome"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Customer Acquisition Trend</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="custAcq"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <div class="viz-header"><div class="viz-title">Top Repeat Claimants — Click row to drill to Customer 360</div><span class="viz-menu">⋯</span></div>
+                    <table class="dt-table">
+                        <thead><tr><th>Customer</th><th>Age Group</th><th>Gender</th><th>City</th><th>Income Segment</th><th>Total Claims</th><th>Total Claimed</th><th>Approval %</th></tr></thead>
+                        <tbody>
+                            <tr><td>Krishna Singh</td><td>60+ Senior</td><td>Female</td><td>Mumbai</td><td>Upper-Mid</td><td>14</td><td>₹18.4L</td><td>78%</td></tr>
+                            <tr><td>Patricia Johnson</td><td>60+ Senior</td><td>Female</td><td>Bangalore</td><td>High</td><td>11</td><td>₹16.2L</td><td>65%</td></tr>
+                            <tr><td>John Kumar</td><td>46-59</td><td>Male</td><td>Jaipur</td><td>Mid</td><td>9</td><td>₹12.8L</td><td>83%</td></tr>
+                            <tr><td>Aarav Sharma</td><td>36-45</td><td>Male</td><td>Pune</td><td>Upper-Mid</td><td>8</td><td>₹11.5L</td><td>88%</td></tr>
+                            <tr><td>Anika Sharma</td><td>26-35</td><td>Female</td><td>Kolkata</td><td>Mid</td><td>7</td><td>₹8.9L</td><td>90%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 4: POLICY & PREMIUM
+                 ============================================ -->
+            <div class="page" id="page-policy">
+                <div class="notes-banner">
+                    <strong>📍 Page 4 of 12 — Policy & Premium Analysis</strong> &nbsp;|&nbsp; Loss Ratio matrix, premium vs claim scatter, profitability by product line. Drill to plan-level.
+                </div>
+
+                <div class="kpi-row cols-4">
+                    <div class="kpi-card"><div class="kpi-label">Total Policies</div><div class="kpi-value">298</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Premium Collected</div><div class="kpi-value">₹642.3 Cr</div><div class="kpi-delta up">▲ 15% YoY</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Loss Ratio</div><div class="kpi-value">68.3%</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Avg Premium / Policy</div><div class="kpi-value">₹38,420</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Loss Ratio by Policy Type</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="polLossRatio"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Premium Collected vs Approved Amount</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="polCombo"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Premium vs Approved Amount (Scatter)</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="polScatter"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Coverage Type Share of Premium</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="polCoverage"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <div class="viz-header"><div class="viz-title">Policy × Coverage Loss Ratio Matrix (Conditional Formatting)</div><span class="viz-menu">⋯</span></div>
+                    <table class="dt-table">
+                        <thead><tr><th>Policy Type ↓ / Coverage →</th><th>Basic</th><th>Standard</th><th>Premium</th><th>Platinum</th><th>Overall</th></tr></thead>
+                        <tbody>
+                            <tr><td>Individual</td><td style="background:#d4edda;">52%</td><td style="background:#d4edda;">58%</td><td style="background:#fff3cd;">71%</td><td style="background:#fff3cd;">78%</td><td><strong>64%</strong></td></tr>
+                            <tr><td>Family Floater</td><td style="background:#d4edda;">55%</td><td style="background:#fff3cd;">68%</td><td style="background:#fff3cd;">74%</td><td style="background:#f8d7da;">85%</td><td><strong>70%</strong></td></tr>
+                            <tr><td>Senior Citizen</td><td style="background:#fff3cd;">72%</td><td style="background:#f8d7da;">88%</td><td style="background:#f8d7da;">102%</td><td style="background:#f8d7da;">112%</td><td><strong>95%</strong></td></tr>
+                            <tr><td>Critical Illness</td><td style="background:#d4edda;">42%</td><td style="background:#d4edda;">51%</td><td style="background:#fff3cd;">63%</td><td style="background:#fff3cd;">69%</td><td><strong>56%</strong></td></tr>
+                            <tr><td>Group Health</td><td style="background:#d4edda;">48%</td><td style="background:#d4edda;">54%</td><td style="background:#fff3cd;">62%</td><td style="background:#fff3cd;">71%</td><td><strong>59%</strong></td></tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:10px; font-size:11px; color:var(--text-muted);">
+                        🟢 &lt;60% Profitable &nbsp;·&nbsp; 🟡 60–80% Acceptable &nbsp;·&nbsp; 🔴 &gt;80% Concerning
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 5: AGENT & SALES
+                 ============================================ -->
+            <div class="page" id="page-agent">
+                <div class="notes-banner">
+                    <strong>📍 Page 5 of 12 — Agent & Sales Performance</strong> &nbsp;|&nbsp; Leaderboard, target vs achievement, RLS-filtered for branch managers.
+                </div>
+
+                <div class="kpi-row cols-5">
+                    <div class="kpi-card"><div class="kpi-label">Total Agents</div><div class="kpi-value">50</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Active Agents</div><div class="kpi-value">47</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Avg Commission</div><div class="kpi-value">8.7%</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Below Target</div><div class="kpi-value">12</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Target Achievement</div><div class="kpi-value">94.2%</div></div>
+                </div>
+
+                <div class="viz-grid cols-2-1">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Top 10 Agents by Approved Amount</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container tall"><canvas id="agentTop"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Branch Performance</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container tall"><canvas id="agentBranch"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <div class="viz-header"><div class="viz-title">Agent Leaderboard — Target vs Achievement</div><span class="viz-menu">⋯</span></div>
+                    <table class="dt-table">
+                        <thead><tr><th>Rank</th><th>Agent Name</th><th>Branch</th><th>Seniority</th><th>Premium Collected</th><th>Annual Target</th><th>Achievement</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="rank-medal gold">1</span></td><td>Aarav Sharma</td><td>Mumbai-Andheri</td><td>Senior</td><td>₹38.4L</td><td>₹30L</td><td><div class="bar-cell"><span>128%</span><div class="bar-fill" style="width:60px;"></div></div></td><td><span class="status-badge status-good">🟢 Top</span></td></tr>
+                            <tr><td><span class="rank-medal silver">2</span></td><td>Patricia Johnson</td><td>Bangalore-MG Rd</td><td>Senior</td><td>₹34.2L</td><td>₹30L</td><td><div class="bar-cell"><span>114%</span><div class="bar-fill" style="width:54px;"></div></div></td><td><span class="status-badge status-good">🟢 Top</span></td></tr>
+                            <tr><td><span class="rank-medal bronze">3</span></td><td>Krishna Singh</td><td>Delhi-CP</td><td>Mid</td><td>₹28.9L</td><td>₹25L</td><td><div class="bar-cell"><span>116%</span><div class="bar-fill" style="width:52px;"></div></div></td><td><span class="status-badge status-good">🟢 Top</span></td></tr>
+                            <tr><td><span class="rank-medal">4</span></td><td>Diya Sharma</td><td>Pune-Kothrud</td><td>Mid</td><td>₹24.6L</td><td>₹25L</td><td><div class="bar-cell"><span>98%</span><div class="bar-fill" style="width:46px;"></div></div></td><td><span class="status-badge status-warn">🟡 Near</span></td></tr>
+                            <tr><td><span class="rank-medal">5</span></td><td>John Kumar</td><td>Chennai-T Nagar</td><td>Junior</td><td>₹14.8L</td><td>₹20L</td><td><div class="bar-cell"><span>74%</span><div class="bar-fill" style="width:32px; background:var(--warning);"></div></div></td><td><span class="status-badge status-warn">🟡 Behind</span></td></tr>
+                            <tr><td><span class="rank-medal">6</span></td><td>Emma Khan</td><td>Hyderabad-Banjara</td><td>Junior</td><td>₹9.2L</td><td>₹20L</td><td><div class="bar-cell"><span>46%</span><div class="bar-fill" style="width:20px; background:var(--danger);"></div></div></td><td><span class="status-badge status-bad">🔴 Critical</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 6: HOSPITAL & GEO
+                 ============================================ -->
+            <div class="page" id="page-hospital">
+                <div class="notes-banner">
+                    <strong>📍 Page 6 of 12 — Hospital & Geographic Analysis</strong> &nbsp;|&nbsp; Pareto 80/20, network vs non-network costs, snowflake-joined region tiers.
+                </div>
+
+                <div class="kpi-row cols-5">
+                    <div class="kpi-card"><div class="kpi-label">Total Hospitals</div><div class="kpi-value">79</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Network</div><div class="kpi-value">52</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Avg Rating</div><div class="kpi-value">4.1 ★</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Avg Claim / Hosp</div><div class="kpi-value">₹5.55 Cr</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Tier-1 Cities</div><div class="kpi-value">82%</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Top 15 Hospitals by Claim Amount</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container tall"><canvas id="hospTop"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Pareto 80/20 — Cumulative Claim Concentration</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container tall"><canvas id="hospPareto"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-3">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Network vs Non-Network Avg Claim</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container short"><canvas id="hospNetwork"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Hospital Rating vs Avg Claim</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container short"><canvas id="hospRating"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">City Tier Distribution</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container short"><canvas id="hospTier"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 7: FRAUD DETECTION
+                 ============================================ -->
+            <div class="page" id="page-fraud">
+                <div class="notes-banner">
+                    <strong>📍 Page 7 of 12 — Fraud Detection</strong> &nbsp;|&nbsp; Scatter for outlier detection, hospital concentration, repeat-offender flags. Compliance-team focused.
+                </div>
+
+                <div class="kpi-row cols-5">
+                    <div class="kpi-card danger"><div class="kpi-label">Fraud Claims</div><div class="kpi-value">413</div><div class="kpi-delta down">▲ 12% YoY</div></div>
+                    <div class="kpi-card danger"><div class="kpi-label">Fraud Rate</div><div class="kpi-value">4.2%</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Amount Flagged</div><div class="kpi-value">₹18.4 Cr</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Fraud Recovered</div><div class="kpi-value">₹11.2 Cr</div></div>
+                    <div class="kpi-card danger"><div class="kpi-label">Repeat Offenders</div><div class="kpi-value">23</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Claim Amount vs Processing Days (Fraud Colored)</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container tall"><canvas id="fraudScatter"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Monthly Fraud Rate Trend (Rolling 3M Avg)</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container tall"><canvas id="fraudTrend"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <div class="viz-header"><div class="viz-title">⚠️ High-Risk Fraud Claims for Review</div><span class="viz-menu">⋯</span></div>
+                    <table class="dt-table">
+                        <thead><tr><th>Claim ID</th><th>Customer</th><th>Hospital</th><th>Disease</th><th>Amount</th><th>LOS</th><th>Risk Score</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr><td>CLM0008927</td><td>Krishna Singh</td><td>Apollo Mumbai-Branch 12</td><td>Cardiac Arrest</td><td>₹7,84,058</td><td>28 days</td><td><span class="status-badge status-bad">94 🔴</span></td><td><button class="btn">Investigate</button></td></tr>
+                            <tr><td>CLM0008812</td><td>Patricia Johnson</td><td>Fortis-Branch 24</td><td>Cancer</td><td>₹6,98,524</td><td>22 days</td><td><span class="status-badge status-bad">89 🔴</span></td><td><button class="btn">Investigate</button></td></tr>
+                            <tr><td>CLM0008776</td><td>Aarav Sharma</td><td>Manipal-Branch 18</td><td>Knee Replacement</td><td>₹5,89,300</td><td>19 days</td><td><span class="status-badge status-warn">76 🟡</span></td><td><button class="btn">Review</button></td></tr>
+                            <tr><td>CLM0008754</td><td>John Kumar</td><td>Apollo Mumbai-Branch 12</td><td>Heart Surgery</td><td>₹5,42,180</td><td>21 days</td><td><span class="status-badge status-bad">88 🔴</span></td><td><button class="btn">Investigate</button></td></tr>
+                            <tr><td>CLM0008701</td><td>Emma Khan</td><td>Wockhardt-Branch 9</td><td>Liver Cirrhosis</td><td>₹4,98,640</td><td>25 days</td><td><span class="status-badge status-warn">71 🟡</span></td><td><button class="btn">Review</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 8: TREND ANALYSIS
+                 ============================================ -->
+            <div class="page" id="page-trend">
+                <div class="notes-banner">
+                    <strong>📍 Page 8 of 12 — Trend Analysis</strong> &nbsp;|&nbsp; Field parameters for metric/granularity, YoY/MoM/QoQ comparisons, decomposition tree, AI Key Influencers.
+                </div>
+
+                <div class="kpi-row">
+                    <div class="kpi-card success"><div class="kpi-label">YoY Growth</div><div class="kpi-value">+12.4%</div><div class="kpi-delta up">vs PY 8.7%</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">MoM Growth</div><div class="kpi-value">+3.2%</div></div>
+                    <div class="kpi-card"><div class="kpi-label">QoQ Growth</div><div class="kpi-value">+8.9%</div></div>
+                    <div class="kpi-card"><div class="kpi-label">YTD Claims</div><div class="kpi-value">9,837</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Rolling 12M</div><div class="kpi-value">9,254</div></div>
+                    <div class="kpi-card"><div class="kpi-label">3M Avg</div><div class="kpi-value">847/mo</div></div>
+                </div>
+
+                <div style="background:white; padding:10px 14px; border-radius:8px; margin-bottom:14px; box-shadow:var(--shadow-sm); display:flex; gap:14px; align-items:center;">
+                    <span style="font-size:11px; font-weight:600; color:var(--text-secondary);">FIELD PARAMETERS:</span>
+                    <div class="slicer-set">
+                        <span style="font-size:11px; color:var(--text-muted); margin-right:4px;">Metric:</span>
+                        <span class="slicer-chip selected">Claim Amount</span>
+                        <span class="slicer-chip">Total Claims</span>
+                        <span class="slicer-chip">Approval Rate</span>
+                        <span class="slicer-chip">Loss Ratio</span>
+                    </div>
+                    <div class="slicer-set">
+                        <span style="font-size:11px; color:var(--text-muted); margin-right:4px;">Granularity:</span>
+                        <span class="slicer-chip">Day</span>
+                        <span class="slicer-chip">Week</span>
+                        <span class="slicer-chip selected">Month</span>
+                        <span class="slicer-chip">Quarter</span>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Cumulative Claim Amount with Running Total</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="trendCumulative"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">YoY Waterfall — Contribution to Growth</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="trendWaterfall"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <div class="viz-header"><div class="viz-title">Decomposition Tree (AI Visual) — Drill from Total → Region → State → Hospital</div><span class="viz-menu">⋯</span></div>
+                    <div style="padding:12px;">
+                        <div class="tree-row">
+                            <div class="tree-node" style="background:#2E5BBA; color:white; font-weight:600;">Total Claim Amount<br><strong>₹438.6 Cr</strong></div>
+                        </div>
+                        <div style="margin-left:30px; border-left:2px dashed var(--border); padding-left:20px;">
+                        <div class="tree-row">
+                            <div class="tree-node" style="background:#eef3fc;">West<br><strong>₹152.4 Cr (35%)</strong></div>
+                            <div class="tree-node" style="background:#eef3fc;">South<br><strong>₹128.7 Cr (29%)</strong></div>
+                            <div class="tree-node" style="background:#eef3fc;">North<br><strong>₹98.2 Cr (22%)</strong></div>
+                            <div class="tree-node">East<br><strong>₹59.3 Cr (14%)</strong></div>
+                        </div>
+                        <div style="margin-left:30px; border-left:2px dashed var(--border); padding-left:20px;">
+                        <div class="tree-row">
+                            <div class="tree-node" style="background:#d4edda;">Maharashtra<br><strong>₹112.6 Cr</strong></div>
+                            <div class="tree-node">Gujarat<br><strong>₹39.8 Cr</strong></div>
+                        </div>
+                        <div style="margin-left:30px; border-left:2px dashed var(--border); padding-left:20px;">
+                        <div class="tree-row">
+                            <div class="tree-node">Mumbai<br><strong>₹82.4 Cr</strong></div>
+                            <div class="tree-node">Pune<br><strong>₹30.2 Cr</strong></div>
+                        </div>
+                        </div></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 9: OPERATIONS
+                 ============================================ -->
+            <div class="page" id="page-ops">
+                <div class="notes-banner">
+                    <strong>📍 Page 9 of 12 — Operations & Processing Performance</strong> &nbsp;|&nbsp; Bottleneck identification, processing-time SLAs, backlog tracking.
+                </div>
+
+                <div class="kpi-row cols-5">
+                    <div class="kpi-card"><div class="kpi-label">Avg Processing Days</div><div class="kpi-value">14.2</div><div class="kpi-delta up">▼ 2.3 days</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Fast (&le;7d)</div><div class="kpi-value">42%</div></div>
+                    <div class="kpi-card danger"><div class="kpi-label">Slow (&gt;30d)</div><div class="kpi-value">8%</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Avg LOS</div><div class="kpi-value">6.4 days</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Pending Backlog</div><div class="kpi-value">452</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Processing Days Distribution</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="opsHist"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Avg Processing by Claim Type & Hospital Type</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="opsType"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Backlog Trend (Pending Claims by Month)</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="opsBacklog"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Day of Week — Claim Submissions</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="opsDayOfWeek"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 10: CUSTOMER 360 (Drill-through target)
+                 ============================================ -->
+            <div class="page" id="page-cust360">
+                <div class="notes-banner">
+                    <strong>📍 Page 10 of 12 — Customer 360 (Drill-through Target)</strong> &nbsp;|&nbsp; Accessed by right-clicking any customer name → Drill-through → Customer 360. Includes back button.
+                </div>
+
+                <button class="btn" style="margin-bottom:12px;">← Back to Customer Analysis</button>
+
+                <div class="profile-card">
+                    <div class="profile-name">Krishna Singh</div>
+                    <div class="profile-meta">
+                        <span>👤 ID: CUST00002</span>
+                        <span>🎂 Age: 73 (60+ Senior)</span>
+                        <span>⚧ Female</span>
+                        <span>📍 Mumbai, Maharashtra (West)</span>
+                        <span>💼 Business</span>
+                    </div>
+                    <div class="profile-tags">
+                        <span class="profile-tag">Upper-Mid Income</span>
+                        <span class="profile-tag">9-year tenure</span>
+                        <span class="profile-tag">⚠️ Repeat Claimant</span>
+                        <span class="profile-tag">📞 +91-8808948427</span>
+                    </div>
+                </div>
+
+                <div class="kpi-row">
+                    <div class="kpi-card"><div class="kpi-label">Total Claims</div><div class="kpi-value">14</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Total Claimed</div><div class="kpi-value">₹18.4L</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Approved</div><div class="kpi-value">₹14.2L</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Approval %</div><div class="kpi-value">78%</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Fraud Flags</div><div class="kpi-value">2</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Avg LOS</div><div class="kpi-value">8.4 days</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Claim Timeline</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="cust360Timeline"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Diseases Pattern</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="cust360Disease"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <div class="viz-header"><div class="viz-title">All Claims by Krishna Singh</div><span class="viz-menu">⋯</span></div>
+                    <table class="dt-table">
+                        <thead><tr><th>Claim Date</th><th>Disease</th><th>Hospital</th><th>Claim Amt</th><th>Approved</th><th>Status</th><th>Fraud?</th></tr></thead>
+                        <tbody>
+                            <tr><td>2024-11-20</td><td>Cardiac Arrest</td><td>Apollo Mumbai-Branch 12</td><td>₹2,84,000</td><td>₹2,12,000</td><td><span class="status-badge status-good">Approved</span></td><td>No</td></tr>
+                            <tr><td>2024-08-15</td><td>Diabetes Type 2</td><td>Lilavati-Branch 5</td><td>₹45,000</td><td>₹38,000</td><td><span class="status-badge status-good">Settled</span></td><td>No</td></tr>
+                            <tr><td>2024-05-10</td><td>Heart Surgery</td><td>Apollo Mumbai-Branch 12</td><td>₹4,12,000</td><td>₹0</td><td><span class="status-badge status-bad">Rejected</span></td><td><span class="status-badge status-bad">Yes</span></td></tr>
+                            <tr><td>2024-02-28</td><td>Hypertension</td><td>Fortis-Branch 7</td><td>₹28,000</td><td>₹26,000</td><td><span class="status-badge status-good">Settled</span></td><td>No</td></tr>
+                            <tr><td>2023-12-05</td><td>Pneumonia</td><td>Kokilaben-Branch 3</td><td>₹1,82,000</td><td>₹1,54,000</td><td><span class="status-badge status-good">Approved</span></td><td>No</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 11: HOSPITAL 360 (Drill-through target)
+                 ============================================ -->
+            <div class="page" id="page-hosp360">
+                <div class="notes-banner">
+                    <strong>📍 Page 11 of 12 — Hospital 360 (Drill-through Target)</strong> &nbsp;|&nbsp; Reached by drilling from any hospital. Shows top diseases, customers, agents directing patients.
+                </div>
+
+                <button class="btn" style="margin-bottom:12px;">← Back to Hospital Analysis</button>
+
+                <div class="profile-card" style="background:linear-gradient(135deg, #28A745 0%, #1d6b30 100%);">
+                    <div class="profile-name">🏥 Apollo Mumbai — Branch 12</div>
+                    <div class="profile-meta">
+                        <span>🆔 HOSP0012</span>
+                        <span>🏙️ Mumbai, Maharashtra (Tier 1)</span>
+                        <span>⭐ Rating: 4.6 / 5</span>
+                        <span>🛏️ 650 beds (Very Large)</span>
+                    </div>
+                    <div class="profile-tags">
+                        <span class="profile-tag">Network Hospital</span>
+                        <span class="profile-tag">NABH + JCI Accredited</span>
+                        <span class="profile-tag">⚠️ High-Volume Provider</span>
+                    </div>
+                </div>
+
+                <div class="kpi-row">
+                    <div class="kpi-card"><div class="kpi-label">Total Claims</div><div class="kpi-value">238</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Total Amount</div><div class="kpi-value">₹14.6 Cr</div></div>
+                    <div class="kpi-card success"><div class="kpi-label">Approval Rate</div><div class="kpi-value">84%</div></div>
+                    <div class="kpi-card danger"><div class="kpi-label">Fraud Rate</div><div class="kpi-value">6.7%</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Avg LOS</div><div class="kpi-value">7.2d</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Avg Claim</div><div class="kpi-value">₹6.1L</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Top Diseases at This Hospital</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="hosp360Disease"></canvas></div>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Monthly Claim Amount Trend</div><span class="viz-menu">⋯</span></div>
+                        <div class="chart-container"><canvas id="hosp360Trend"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Top Customers at This Hospital</div><span class="viz-menu">⋯</span></div>
+                        <table class="dt-table">
+                            <thead><tr><th>Customer</th><th>Claims</th><th>Total Amt</th><th>Fraud?</th></tr></thead>
+                            <tbody>
+                                <tr><td>Krishna Singh</td><td>6</td><td>₹8.2L</td><td><span class="status-badge status-bad">2 flags</span></td></tr>
+                                <tr><td>John Kumar</td><td>4</td><td>₹6.4L</td><td>—</td></tr>
+                                <tr><td>Aarav Sharma</td><td>3</td><td>₹4.9L</td><td>—</td></tr>
+                                <tr><td>Patricia Johnson</td><td>3</td><td>₹4.2L</td><td><span class="status-badge status-bad">1 flag</span></td></tr>
+                                <tr><td>Diya Sharma</td><td>2</td><td>₹2.8L</td><td>—</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Top Agents Directing Patients Here</div><span class="viz-menu">⋯</span></div>
+                        <table class="dt-table">
+                            <thead><tr><th>Agent</th><th>Branch</th><th>Patients Routed</th><th>Total Approved</th></tr></thead>
+                            <tbody>
+                                <tr><td>Aarav Sharma</td><td>Mumbai-Andheri</td><td>42</td><td>₹3.1 Cr</td></tr>
+                                <tr><td>Diya Sharma</td><td>Pune-Kothrud</td><td>28</td><td>₹1.8 Cr</td></tr>
+                                <tr><td>Patricia Johnson</td><td>Bangalore-MG Rd</td><td>21</td><td>₹1.4 Cr</td></tr>
+                                <tr><td>Krishna Singh</td><td>Delhi-CP</td><td>18</td><td>₹1.1 Cr</td></tr>
+                                <tr><td>Emma Khan</td><td>Hyderabad-Banjara</td><td>14</td><td>₹84L</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 PAGE 12: DATA QUALITY (Admin)
+                 ============================================ -->
+            <div class="page" id="page-dq">
+                <div class="notes-banner">
+                    <strong>📍 Page 12 of 12 — Data Quality (Hidden Admin Page)</strong> &nbsp;|&nbsp; Monitors refresh status, FK integrity, null counts. Hidden from end-users via RLS.
+                </div>
+
+                <div class="kpi-row cols-4">
+                    <div class="kpi-card success"><div class="kpi-label">Last Refresh</div><div class="kpi-value">2 hrs ago</div><div class="kpi-delta up">✓ Success</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Total Rows</div><div class="kpi-value">12,839</div></div>
+                    <div class="kpi-card warning"><div class="kpi-label">Orphaned FKs</div><div class="kpi-value">163</div></div>
+                    <div class="kpi-card"><div class="kpi-label">Model Size</div><div class="kpi-value">8.4 MB</div></div>
+                </div>
+
+                <div class="viz-grid cols-2">
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Table Row Counts (Post-Cleaning)</div><span class="viz-menu">⋯</span></div>
+                        <table class="dt-table">
+                            <thead><tr><th>Table</th><th>Raw Rows</th><th>After Cleaning</th><th>Removed</th></tr></thead>
+                            <tbody>
+                                <tr><td>Fact_Claims</td><td>10,050</td><td>9,837</td><td><span class="status-badge status-warn">213 (dup/orphan)</span></td></tr>
+                                <tr><td>Dim_Customer</td><td>508</td><td>498</td><td>10 (dup)</td></tr>
+                                <tr><td>Dim_Policy</td><td>303</td><td>298</td><td>5 (dup)</td></tr>
+                                <tr><td>Dim_Agent</td><td>52</td><td>50</td><td>2 (dup)</td></tr>
+                                <tr><td>Dim_Hospital</td><td>82</td><td>79</td><td>3 (dup + 1 bad FK)</td></tr>
+                                <tr><td>Dim_City</td><td>9</td><td>8</td><td>1 (dup)</td></tr>
+                                <tr><td>Dim_Disease</td><td>26</td><td>25</td><td>1 (dup)</td></tr>
+                                <tr><td>Dim_Date</td><td>1,826</td><td>1,826</td><td>0</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="viz-card">
+                        <div class="viz-header"><div class="viz-title">Referential Integrity (Anti-Join Output)</div><span class="viz-menu">⋯</span></div>
+                        <table class="dt-table">
+                            <thead><tr><th>Mismatch Type</th><th>Count</th><th>Resolution</th></tr></thead>
+                            <tbody>
+                                <tr><td>Claims → Invalid CustomerID</td><td>87</td><td>Mapped to UNKNOWN</td></tr>
+                                <tr><td>Claims → Invalid PolicyID</td><td>54</td><td>Mapped to UNKNOWN</td></tr>
+                                <tr><td>Claims → Missing AgentID</td><td>18</td><td>Mapped to UNKNOWN</td></tr>
+                                <tr><td>Claims → Missing HospitalID</td><td>3</td><td>Mapped to UNKNOWN</td></tr>
+                                <tr><td>Hospitals → Invalid CityID</td><td>1</td><td>Removed</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <div class="viz-header"><div class="viz-title">Null % by Critical Column</div><span class="viz-menu">⋯</span></div>
+                    <div class="chart-container"><canvas id="dqNulls"></canvas></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// ============== NAVIGATION ==============
+const titleMap = {
+    'exec': 'Executive Summary',
+    'claims': 'Claims Analysis',
+    'customer': 'Customer Analysis',
+    'policy': 'Policy & Premium Analysis',
+    'agent': 'Agent & Sales Performance',
+    'hospital': 'Hospital & Geographic Analysis',
+    'fraud': 'Fraud Detection',
+    'trend': 'Trend Analysis',
+    'ops': 'Operations & Processing',
+    'cust360': 'Customer 360',
+    'hosp360': 'Hospital 360',
+    'dq': 'Data Quality (Admin)'
+};
+
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const page = item.dataset.page;
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById('page-' + page).classList.add('active');
+        document.getElementById('topbar-title').textContent = titleMap[page];
+        document.getElementById('content').scrollTop = 0;
+        setTimeout(() => {
+            renderChartsForPage(page);
+        }, 50);
+    });
+});
+
+// ============== CHART CONFIG ==============
+Chart.defaults.font.family = "'Segoe UI', sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#6c757d';
+
+const palette = {
+    primary: '#2E5BBA',
+    primaryLight: '#6da0ff',
+    success: '#28A745',
+    successLight: '#5dd57a',
+    warning: '#FFC107',
+    danger: '#DC3545',
+    purple: '#6f42c1',
+    teal: '#20c997',
+    pink: '#e83e8c',
+    gray: '#6c757d',
+};
+
+const charts = {};
+function destroyIfExists(id) {
+    if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+// ============== PAGE 1: EXEC ==============
+function renderExecCharts() {
+    destroyIfExists('execTrend');
+    charts.execTrend = new Chart(document.getElementById('execTrend'), {
+        type: 'line',
+        data: {
+            labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+            datasets: [
+                { label: 'FY 2024-25', data: [28,32,36,38,42,40,45,48,42,38,40,42], borderColor: palette.primary, backgroundColor: 'rgba(46,91,186,0.1)', tension:0.4, fill:true, borderWidth: 2.5 },
+                { label: 'FY 2023-24', data: [25,28,31,33,38,36,40,42,38,34,36,38], borderColor: palette.gray, borderDash: [5,5], tension:0.4, borderWidth: 2 }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>'₹'+v+'Cr'}}} }
+    });
+
+    destroyIfExists('execStatus');
+    charts.execStatus = new Chart(document.getElementById('execStatus'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Approved', 'Settled', 'Rejected', 'Pending'],
+            datasets: [{ data: [62.3, 20.1, 13.0, 4.6], backgroundColor: [palette.success, palette.successLight, palette.danger, palette.warning], borderWidth:0 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right'}}, cutout:'60%' }
+    });
+
+    destroyIfExists('execClaimType');
+    charts.execClaimType = new Chart(document.getElementById('execClaimType'), {
+        type: 'pie',
+        data: {
+            labels: ['Cashless', 'Reimbursement'],
+            datasets: [{ data: [68, 32], backgroundColor: [palette.primary, palette.warning], borderWidth:0 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right'}} }
+    });
+
+    destroyIfExists('execStates');
+    charts.execStates = new Chart(document.getElementById('execStates'), {
+        type: 'bar',
+        data: {
+            labels: ['Maharashtra','Karnataka','Tamil Nadu','Delhi','Telangana'],
+            datasets: [{ data: [112.6, 84.3, 72.1, 64.8, 52.4], backgroundColor: palette.primary, borderRadius:4 }]
+        },
+        options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>'₹'+v+'Cr'}}} }
+    });
+
+    destroyIfExists('execHospitals');
+    charts.execHospitals = new Chart(document.getElementById('execHospitals'), {
+        type: 'bar',
+        data: {
+            labels: ['Apollo Mumbai-B12','Fortis Bangalore-B7','Medanta Delhi','Manipal Pune-B3','AIIMS Delhi','Kokilaben-B5','Lilavati-B2','Max Delhi-B9','Narayana B-B4','Aster Hyderabad'],
+            datasets: [{ data: [14.6, 12.4, 10.8, 9.7, 8.9, 8.2, 7.6, 7.1, 6.8, 6.2], backgroundColor: palette.primary, borderRadius:4 }]
+        },
+        options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>'₹'+v+'Cr'}}} }
+    });
+
+    destroyIfExists('execRegion');
+    charts.execRegion = new Chart(document.getElementById('execRegion'), {
+        type: 'polarArea',
+        data: {
+            labels: ['West','South','North','East'],
+            datasets: [{ data: [152.4, 128.7, 98.2, 59.3], backgroundColor: ['rgba(46,91,186,0.7)','rgba(40,167,69,0.7)','rgba(255,193,7,0.7)','rgba(220,53,69,0.7)'] }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right'}} }
+    });
+}
+
+// ============== PAGE 2: CLAIMS ==============
+function renderClaimsCharts() {
+    destroyIfExists('claimsFunnel');
+    charts.claimsFunnel = new Chart(document.getElementById('claimsFunnel'), {
+        type: 'bar',
+        data: {
+            labels: ['Submitted','In Review','Approved','Settled'],
+            datasets: [{ data: [9837, 6576, 6124, 1978], backgroundColor: [palette.gray, palette.warning, palette.success, palette.successLight], borderRadius:4 }]
+        },
+        options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+    });
+
+    destroyIfExists('claimsHist');
+    charts.claimsHist = new Chart(document.getElementById('claimsHist'), {
+        type: 'bar',
+        data: {
+            labels: ['<25K','25K-1L','1L-3L','3L-7L','7L+'],
+            datasets: [{ label: 'Claims', data: [1245, 2856, 3127, 1654, 955], backgroundColor: palette.primary, borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+    });
+
+    destroyIfExists('claimsHeatmap');
+    charts.claimsHeatmap = new Chart(document.getElementById('claimsHeatmap'), {
+        type: 'bar',
+        data: {
+            labels: ['Cardiovascular','Oncology','Maternity','Orthopedic','Accident','Respiratory'],
+            datasets: [
+                { label:'Approved', data:[680,420,520,540,820,380], backgroundColor: palette.success },
+                { label:'Rejected', data:[120,180,40,80,60,90], backgroundColor: palette.danger },
+                { label:'Pending', data:[40,28,12,30,15,28], backgroundColor: palette.warning }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, scales:{x:{stacked:true},y:{stacked:true}}, plugins:{legend:{position:'bottom'}} }
+    });
+
+    destroyIfExists('claimsProcessing');
+    charts.claimsProcessing = new Chart(document.getElementById('claimsProcessing'), {
+        type: 'bar',
+        data: {
+            labels: ['Network','Non-Network','PPN'],
+            datasets: [{ label: 'Avg Days', data: [9.2, 22.4, 14.8], backgroundColor: [palette.success, palette.danger, palette.warning], borderRadius:6 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{title:{display:true,text:'Days'}}} }
+    });
+}
+
+// ============== PAGE 3: CUSTOMER ==============
+function renderCustomerCharts() {
+    destroyIfExists('custAge');
+    charts.custAge = new Chart(document.getElementById('custAge'), {
+        type: 'bar',
+        data: {
+            labels: ['<18','18-25','26-35','36-45','46-59','60+'],
+            datasets: [
+                { label: 'Male', data: [12, 38, 72, 64, 58, 42], backgroundColor: palette.primary },
+                { label: 'Female', data: [8, 34, 68, 56, 48, 38], backgroundColor: palette.pink }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, scales:{x:{stacked:true},y:{stacked:true}}, plugins:{legend:{position:'bottom'}} }
+    });
+
+    destroyIfExists('custGender');
+    charts.custGender = new Chart(document.getElementById('custGender'), {
+        type: 'bar',
+        data: {
+            labels: ['Single','Married','Divorced'],
+            datasets: [
+                { label:'Male', data:[120, 132, 32], backgroundColor: palette.primary },
+                { label:'Female', data:[98, 142, 28], backgroundColor: palette.pink }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}} }
+    });
+
+    destroyIfExists('custIncome');
+    charts.custIncome = new Chart(document.getElementById('custIncome'), {
+        type: 'bar',
+        data: {
+            labels: ['Low(<3L)','Lower-Mid','Mid','Upper-Mid','High(30L+)'],
+            datasets: [{ label: 'Avg Claim Amount', data: [38000, 72000, 142000, 248000, 412000], backgroundColor: palette.teal, borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'₹'+(v/1000)+'K'}}} }
+    });
+
+    destroyIfExists('custAcq');
+    charts.custAcq = new Chart(document.getElementById('custAcq'), {
+        type: 'line',
+        data: {
+            labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+            datasets: [
+                { type:'bar', label: 'New Customers', data: [4,6,8,7,10,5,8,7,4,5,6,8], backgroundColor: palette.warning },
+                { type:'line', label: 'Cumulative', data: [4,10,18,25,35,40,48,55,59,64,70,78], borderColor: palette.primary, fill:false, tension:0.3, yAxisID:'y1' }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y1:{position:'right', grid:{display:false}}} }
+    });
+}
+
+// ============== PAGE 4: POLICY ==============
+function renderPolicyCharts() {
+    destroyIfExists('polLossRatio');
+    charts.polLossRatio = new Chart(document.getElementById('polLossRatio'), {
+        type: 'bar',
+        data: {
+            labels: ['Individual','Family Floater','Senior Citizen','Critical Illness','Group Health'],
+            datasets: [{ label: 'Loss Ratio %', data: [64, 70, 95, 56, 59], backgroundColor: [palette.success, palette.warning, palette.danger, palette.success, palette.success], borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>v+'%'}}} }
+    });
+
+    destroyIfExists('polCombo');
+    charts.polCombo = new Chart(document.getElementById('polCombo'), {
+        type: 'bar',
+        data: {
+            labels: ['Q1','Q2','Q3','Q4'],
+            datasets: [
+                { type:'bar', label: 'Premium Collected', data: [142, 168, 175, 158], backgroundColor: palette.primary },
+                { type:'line', label: 'Approved Amount', data: [98, 112, 124, 105], borderColor: palette.danger, fill:false, tension:0.3, borderWidth:3 }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>'₹'+v+'Cr'}}} }
+    });
+
+    destroyIfExists('polScatter');
+    charts.polScatter = new Chart(document.getElementById('polScatter'), {
+        type: 'scatter',
+        data: {
+            datasets: [
+                { label:'Profitable', data:[{x:8000,y:4500},{x:12000,y:7200},{x:15000,y:9800},{x:18000,y:12500},{x:25000,y:14200},{x:32000,y:18000}], backgroundColor: palette.success, pointRadius:6 },
+                { label:'Loss-making', data:[{x:14000,y:18000},{x:18000,y:22000},{x:22000,y:28000},{x:28000,y:35000}], backgroundColor: palette.danger, pointRadius:6 }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{x:{title:{display:true,text:'Premium (₹)'}},y:{title:{display:true,text:'Approved Amt (₹)'}}} }
+    });
+
+    destroyIfExists('polCoverage');
+    charts.polCoverage = new Chart(document.getElementById('polCoverage'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Basic','Standard','Premium','Platinum'],
+            datasets: [{ data: [15, 28, 38, 19], backgroundColor: [palette.gray, palette.primary, palette.success, palette.purple], borderWidth:0 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right'}}, cutout:'55%' }
+    });
+}
+
+// ============== PAGE 5: AGENT ==============
+function renderAgentCharts() {
+    destroyIfExists('agentTop');
+    charts.agentTop = new Chart(document.getElementById('agentTop'), {
+        type: 'bar',
+        data: {
+            labels: ['Aarav Sharma','Patricia J.','Krishna Singh','Diya Sharma','John Kumar','Anika Sharma','Vihaan Miller','Emma Khan','Sai Patel','Reyansh Mehta'],
+            datasets: [{ data: [38.4, 34.2, 28.9, 24.6, 22.1, 19.8, 17.6, 14.8, 12.3, 10.2], backgroundColor: palette.primary, borderRadius:4 }]
+        },
+        options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>'₹'+v+'L'}}} }
+    });
+
+    destroyIfExists('agentBranch');
+    charts.agentBranch = new Chart(document.getElementById('agentBranch'), {
+        type: 'bar',
+        data: {
+            labels: ['Mumbai','Bangalore','Delhi','Pune','Chennai','Hyderabad','Kolkata'],
+            datasets: [{ label: 'Achievement %', data: [118, 112, 104, 96, 88, 76, 68], backgroundColor: ['#28A745','#28A745','#28A745','#FFC107','#FFC107','#DC3545','#DC3545'], borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>v+'%'}}} }
+    });
+}
+
+// ============== PAGE 6: HOSPITAL ==============
+function renderHospitalCharts() {
+    destroyIfExists('hospTop');
+    charts.hospTop = new Chart(document.getElementById('hospTop'), {
+        type: 'bar',
+        data: {
+            labels: ['Apollo Mumbai-12','Fortis BLR-7','Medanta Del','Manipal Pune','AIIMS Del','Kokilaben-5','Lilavati-2','Max Del-9','Narayana B-4','Aster Hyd','Wockhardt','Care Hyd','Yashoda B-6','BLK Del','KIMS'],
+            datasets: [{ data: [14.6, 12.4, 10.8, 9.7, 8.9, 8.2, 7.6, 7.1, 6.8, 6.2, 5.8, 5.4, 5.1, 4.8, 4.5], backgroundColor: palette.primary, borderRadius:3 }]
+        },
+        options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>'₹'+v+'Cr'}}} }
+    });
+
+    destroyIfExists('hospPareto');
+    charts.hospPareto = new Chart(document.getElementById('hospPareto'), {
+        type: 'bar',
+        data: {
+            labels: ['H1','H2','H3','H4','H5','H6','H7','H8','H9','H10','H11','H12','H13','H14','H15','H16+'],
+            datasets: [
+                { type:'bar', label: 'Claim Amount', data: [14.6, 12.4, 10.8, 9.7, 8.9, 8.2, 7.6, 7.1, 6.8, 6.2, 5.8, 5.4, 5.1, 4.8, 4.5, 32], backgroundColor: palette.primary },
+                { type:'line', label: 'Cumulative %', data: [9, 17, 24, 30, 36, 41, 46, 51, 55, 59, 63, 66, 70, 73, 76, 100], borderColor: palette.danger, borderWidth:3, fill:false, tension:0.2, yAxisID:'y1' }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>'₹'+v+'Cr'}}, y1:{position:'right', max:100, ticks:{callback:v=>v+'%'}, grid:{display:false}}} }
+    });
+
+    destroyIfExists('hospNetwork');
+    charts.hospNetwork = new Chart(document.getElementById('hospNetwork'), {
+        type: 'bar',
+        data: {
+            labels: ['Network','PPN','Non-Network'],
+            datasets: [{ data: [4.2, 5.8, 8.4], backgroundColor: [palette.success, palette.warning, palette.danger], borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'₹'+v+'L'}}} }
+    });
+
+    destroyIfExists('hospRating');
+    charts.hospRating = new Chart(document.getElementById('hospRating'), {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Hospitals',
+                data: Array.from({length:30}, () => ({ x: 2.5 + Math.random() * 2.5, y: 2 + Math.random() * 12 })),
+                backgroundColor: palette.primary, pointRadius:5
+            }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{x:{title:{display:true,text:'Rating'},min:2,max:5},y:{title:{display:true,text:'Avg Claim ₹L'}}} }
+    });
+
+    destroyIfExists('hospTier');
+    charts.hospTier = new Chart(document.getElementById('hospTier'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Tier 1','Tier 2','Tier 3'],
+            datasets: [{ data: [65, 22, 13], backgroundColor: [palette.primary, palette.warning, palette.gray], borderWidth:0 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}} }
+    });
+}
+
+// ============== PAGE 7: FRAUD ==============
+function renderFraudCharts() {
+    destroyIfExists('fraudScatter');
+    const normal = Array.from({length:80}, () => ({ x: Math.random() * 40, y: Math.random() * 4 }));
+    const fraud = Array.from({length:25}, () => ({ x: 15 + Math.random() * 45, y: 4 + Math.random() * 6 }));
+    charts.fraudScatter = new Chart(document.getElementById('fraudScatter'), {
+        type: 'scatter',
+        data: {
+            datasets: [
+                { label: 'Normal', data: normal, backgroundColor: 'rgba(46,91,186,0.5)', pointRadius:4 },
+                { label: 'Fraud Flagged', data: fraud, backgroundColor: palette.danger, pointRadius:6 }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{x:{title:{display:true,text:'Processing Days'}}, y:{title:{display:true, text:'Claim Amt (₹L)'}}} }
+    });
+
+    destroyIfExists('fraudTrend');
+    charts.fraudTrend = new Chart(document.getElementById('fraudTrend'), {
+        type: 'line',
+        data: {
+            labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+            datasets: [
+                { label: 'Monthly Fraud %', data: [3.2, 3.8, 4.1, 4.5, 4.2, 5.1, 4.8, 4.6, 4.0, 3.8, 4.2, 4.4], borderColor: palette.danger, backgroundColor:'rgba(220,53,69,0.1)', fill:true, tension:0.3 },
+                { label: 'Rolling 3M Avg', data: [3.5, 3.7, 3.9, 4.1, 4.3, 4.6, 4.7, 4.8, 4.5, 4.1, 4.0, 4.1], borderColor: palette.primary, borderDash:[5,5], fill:false, tension:0.3 }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>v+'%'}}} }
+    });
+}
+
+// ============== PAGE 8: TREND ==============
+function renderTrendCharts() {
+    destroyIfExists('trendCumulative');
+    charts.trendCumulative = new Chart(document.getElementById('trendCumulative'), {
+        type: 'line',
+        data: {
+            labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+            datasets: [
+                { type:'bar', label: 'Monthly', data: [28,32,36,38,42,40,45,48,42,38,40,42], backgroundColor: palette.primary, yAxisID:'y' },
+                { type:'line', label: 'Cumulative', data: [28,60,96,134,176,216,261,309,351,389,429,471], borderColor: palette.success, fill:false, tension:0.3, yAxisID:'y1', borderWidth:3 }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{ticks:{callback:v=>'₹'+v+'Cr'}}, y1:{position:'right', grid:{display:false}, ticks:{callback:v=>'₹'+v+'Cr'}}} }
+    });
+
+    destroyIfExists('trendWaterfall');
+    charts.trendWaterfall = new Chart(document.getElementById('trendWaterfall'), {
+        type: 'bar',
+        data: {
+            labels: ['FY23-24', 'Volume', 'Mix', 'Inflation', 'Fraud Loss', 'FY24-25'],
+            datasets: [{ data: [403, 18, 9, 12, -4, 438.6], backgroundColor: [palette.gray, palette.success, palette.success, palette.warning, palette.danger, palette.primary], borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'₹'+v+'Cr'}}} }
+    });
+}
+
+// ============== PAGE 9: OPERATIONS ==============
+function renderOpsCharts() {
+    destroyIfExists('opsHist');
+    charts.opsHist = new Chart(document.getElementById('opsHist'), {
+        type: 'bar',
+        data: {
+            labels: ['1-7d','8-14d','15-21d','22-30d','31-45d','>45d'],
+            datasets: [{ data: [4128, 2854, 1672, 728, 365, 90], backgroundColor: [palette.success, palette.success, palette.warning, palette.warning, palette.danger, palette.danger], borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+    });
+
+    destroyIfExists('opsType');
+    charts.opsType = new Chart(document.getElementById('opsType'), {
+        type: 'bar',
+        data: {
+            labels: ['Network','PPN','Non-Network'],
+            datasets: [
+                { label:'Cashless', data:[7.2, 11.4, 18.8], backgroundColor: palette.primary },
+                { label:'Reimbursement', data:[14.8, 19.2, 28.4], backgroundColor: palette.warning }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{title:{display:true,text:'Avg Days'}}} }
+    });
+
+    destroyIfExists('opsBacklog');
+    charts.opsBacklog = new Chart(document.getElementById('opsBacklog'), {
+        type: 'line',
+        data: {
+            labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+            datasets: [
+                { type:'bar', label: 'Pending Backlog', data: [320, 380, 425, 510, 472, 528, 495, 460, 442, 418, 462, 452], backgroundColor: palette.warning },
+                { type:'line', label: 'New Claims', data: [780, 825, 850, 910, 890, 920, 870, 845, 820, 790, 815, 840], borderColor: palette.primary, fill:false, tension:0.3, yAxisID:'y1' }
+            ]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y1:{position:'right', grid:{display:false}}} }
+    });
+
+    destroyIfExists('opsDayOfWeek');
+    charts.opsDayOfWeek = new Chart(document.getElementById('opsDayOfWeek'), {
+        type: 'bar',
+        data: {
+            labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+            datasets: [{ data: [1620, 1842, 1758, 1684, 1592, 928, 413], backgroundColor: palette.primary, borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+    });
+}
+
+// ============== PAGE 10: CUST 360 ==============
+function renderCust360Charts() {
+    destroyIfExists('cust360Timeline');
+    charts.cust360Timeline = new Chart(document.getElementById('cust360Timeline'), {
+        type: 'bar',
+        data: {
+            labels: ['2021','2022','2023','2024','2025'],
+            datasets: [{ label:'Annual Claimed Amount', data: [2.4, 3.8, 4.6, 5.2, 2.4], backgroundColor: palette.primary, borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'₹'+v+'L'}}} }
+    });
+
+    destroyIfExists('cust360Disease');
+    charts.cust360Disease = new Chart(document.getElementById('cust360Disease'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Cardiovascular','Diabetes','Respiratory','Other'],
+            datasets: [{ data: [6, 4, 2, 2], backgroundColor: [palette.danger, palette.warning, palette.primary, palette.gray], borderWidth:0 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'right'}} }
+    });
+}
+
+// ============== PAGE 11: HOSP 360 ==============
+function renderHosp360Charts() {
+    destroyIfExists('hosp360Disease');
+    charts.hosp360Disease = new Chart(document.getElementById('hosp360Disease'), {
+        type: 'bar',
+        data: {
+            labels: ['Cardiac Arrest','Heart Surgery','Cancer','Stroke','Knee Replace'],
+            datasets: [{ data: [42, 38, 32, 28, 22], backgroundColor: palette.primary, borderRadius:4 }]
+        },
+        options: { indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+    });
+
+    destroyIfExists('hosp360Trend');
+    charts.hosp360Trend = new Chart(document.getElementById('hosp360Trend'), {
+        type: 'line',
+        data: {
+            labels: ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'],
+            datasets: [{ data: [1.1, 1.3, 1.2, 1.4, 1.6, 1.5, 1.7, 1.8, 1.4, 1.2, 1.3, 1.5], borderColor: palette.success, backgroundColor:'rgba(40,167,69,0.1)', fill:true, tension:0.3 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>'₹'+v+'Cr'}}} }
+    });
+}
+
+// ============== PAGE 12: DATA QUALITY ==============
+function renderDQCharts() {
+    destroyIfExists('dqNulls');
+    charts.dqNulls = new Chart(document.getElementById('dqNulls'), {
+        type: 'bar',
+        data: {
+            labels: ['Customer.DOB','Customer.Phone','Customer.Income','Claims.DischargeDate','Claims.ApprovedAmt','Hospital.Rating','Customer.Email'],
+            datasets: [{ label: 'Null %', data: [4.1, 5.3, 3.2, 4.5, 3.1, 5.7, 4.3], backgroundColor: palette.warning, borderRadius:4 }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>v+'%'}}} }
+    });
+}
+
+// ============== ROUTER ==============
+function renderChartsForPage(page) {
+    switch(page) {
+        case 'exec': renderExecCharts(); break;
+        case 'claims': renderClaimsCharts(); break;
+        case 'customer': renderCustomerCharts(); break;
+        case 'policy': renderPolicyCharts(); break;
+        case 'agent': renderAgentCharts(); break;
+        case 'hospital': renderHospitalCharts(); break;
+        case 'fraud': renderFraudCharts(); break;
+        case 'trend': renderTrendCharts(); break;
+        case 'ops': renderOpsCharts(); break;
+        case 'cust360': renderCust360Charts(); break;
+        case 'hosp360': renderHosp360Charts(); break;
+        case 'dq': renderDQCharts(); break;
+    }
+}
+
+// initial render
+window.addEventListener('load', () => {
+    renderExecCharts();
+});
+</script>
+
+</body>
+</html>
